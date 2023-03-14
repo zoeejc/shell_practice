@@ -54,14 +54,14 @@ int main(int argc, char * argv[]) {
                         printf("Error creating process, fork failed.");
                         exit(1);
                     } else if (pid == 0) { // child process
-                        if (args[1] == NULL) {
+                        if (args[1] == NULL) { // if it is just dir
                             execlp("ls", "ls", "-al", NULL);
 
-                        } else if (args[1] != NULL) {
+                        } else if (args[1] != NULL) { // if it is dir <directory>
                             execlp("ls", "ls", "-al", args[1], NULL);
                         }
                     } else {
-                        wait(NULL);
+                        wait(NULL); // parent waits for child to finish
                     }
 
 
