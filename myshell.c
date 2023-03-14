@@ -15,14 +15,23 @@ int main(int argc, char * argv[]) {
         fputs(symbol, stdout); // print the symbol (writing to standard output)
         if (fgets(buffer, MAX_BUFFER, stdin)) {
             int i = 0;
-            char ** hold = strtok(buffer, SEPARATORS); // 'hold' holds the result of tokenising so we can add to args
-            while (hold != NULL && i < MAX_ARGS) { // while there is something to tokenise, and we aren't over max length
+            char * hold = strtok(buffer, SEPARATORS); // 'hold' holds the result of tokenising so we can add to args
+            while (hold != NULL) { // while there is something to tokenise, and we aren't over max length of array
                 args[i] = hold; // add token to list
                 i++;
-                hold = strtok(buffer, SEPARATORS); // get next token ready
+                hold = strtok(NULL, SEPARATORS); // get next token ready
             }
-
+            // printf("%d\n", i);
             args[i] = NULL; // last element must be null
+
+            char * cmd = args[0];
+
+            if (*args) { // if there was an argument given
+                if (strcmp(cmd, "clr") == 0) { // if clr given
+                    printf("hello");
+                    system("clear");
+                }
+            }
 
         }
 
