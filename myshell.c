@@ -10,6 +10,7 @@ int main(int argc, char * argv[]) {
     char * symbol = ">>>";
     char buffer[MAX_BUFFER]; // setting max length
     char * args[MAX_ARGS]; // setting max length
+    extern char ** environ;
 
     while (!feof(stdin)) { // main loop until end of file/interrupt
         fputs(symbol, stdout); // print the symbol (writing to standard output)
@@ -28,8 +29,15 @@ int main(int argc, char * argv[]) {
 
             if (*args) { // if there was an argument given
                 if (strcmp(cmd, "clr") == 0) { // if clr given
-                    printf("hello");
                     system("clear");
+                } else if (strcmp(cmd, "quit") == 0) { // if quit given
+                    exit(0);
+                } else if (strcmp(cmd, "environ") == 0) {
+                    int j = 0;
+                    while (environ[j] != NULL) { // haven't hit the end of the list
+                        printf("%s\n", environ[j]);
+                        j++;
+                    }
                 }
             }
 
