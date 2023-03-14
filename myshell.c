@@ -1,6 +1,7 @@
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include<string.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
 #define MAX_BUFFER 1024 // line buffer
 #define MAX_ARGS 64
 #define SEPARATORS " \t\n"  // token separators (space, tab, newline)
@@ -12,8 +13,12 @@ int main(int argc, char * argv[]) {
     char * args[MAX_ARGS]; // setting max length
     extern char ** environ;
 
+    char * pwd = getenv("PWD");
+
+
     while (!feof(stdin)) { // main loop until end of file/interrupt
-        fputs(symbol, stdout); // print the symbol (writing to standard output)
+        fprintf(stdout, "%s%s", pwd, symbol); // print the symbol (writing to standard output)
+
         if (fgets(buffer, MAX_BUFFER, stdin)) {
             int i = 0;
             char * hold = strtok(buffer, SEPARATORS); // 'hold' holds the result of tokenising so we can add to args
@@ -33,10 +38,18 @@ int main(int argc, char * argv[]) {
                 } else if (strcmp(cmd, "quit") == 0) { // if quit given
                     exit(0);
                 } else if (strcmp(cmd, "environ") == 0) {
-                    int j = 0;
+                    int j = 0; // counter variable
                     while (environ[j] != NULL) { // haven't hit the end of the list
                         printf("%s\n", environ[j]);
-                        j++;
+                        j++; // move to next string
+                    }
+                } else if (strcmp(cmd, "dir") == 0) {
+                    // if just dir, use current directory, if something extra, use that directory
+                    if (args[1] == NULL) {
+                        execlp("ls", "ls", "-al", NULL);
+
+                    } else if (args[1] != NULL) {
+                        execlp("ls", "ls", "-al", args[1], NULL);
                     }
                 }
             }
