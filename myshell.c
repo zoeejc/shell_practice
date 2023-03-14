@@ -2,6 +2,9 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<unistd.h>
+#include<sys/wait.h>
+#include<sys/types.h>
+
 #define MAX_BUFFER 1024 // line buffer
 #define MAX_ARGS 64
 #define SEPARATORS " \t\n"  // token separators (space, tab, newline)
@@ -45,12 +48,24 @@ int main(int argc, char * argv[]) {
                     }
                 } else if (strcmp(cmd, "dir") == 0) {
                     // if just dir, use current directory, if something extra, use that directory
-                    if (args[1] == NULL) {
-                        execlp("ls", "ls", "-al", NULL);
+                    pid_t pid = fork();
 
-                    } else if (args[1] != NULL) {
-                        execlp("ls", "ls", "-al", args[1], NULL);
+                    if (pid < 0) { // error handling
+                        printf("Error creating process, fork failed.");
+                        exit(1);
+                    } else if (pid == 0) { // child process
+                        if (args[1] == NULL) {
+                            execlp("ls", "ls", "-al", NULL);
+
+                        } else if (args[1] != NULL) {
+                            execlp("ls", "ls", "-al", args[1], NULL);
+                        }
+                    } else {
+                        wait(NULL);
                     }
+
+
+                    
                 }
             }
 
