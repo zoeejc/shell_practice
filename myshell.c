@@ -62,10 +62,15 @@ int main(int argc, char * argv[]) {
                         }
                     } else {
                         wait(NULL); // parent waits for child to finish
+                    }   
+                } else if (strcmp(cmd, "cd") == 0) {
+                    if (args[1] == NULL) {
+                        printf("You are in %s\n", pwd);
+                    } else {
+                        chdir(args[1]);
+                        setenv(pwd, getcwd(), 1);
                     }
 
-
-                    
                 }
             }
 
