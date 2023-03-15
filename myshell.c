@@ -16,10 +16,8 @@ int main(int argc, char * argv[]) {
     char * args[MAX_ARGS]; // setting max length
     extern char ** environ;
 
-    char * pwd = getenv("PWD");
-
-
     while (!feof(stdin)) { // main loop until end of file/interrupt
+        char * pwd = getenv("PWD");
         fprintf(stdout, "%s%s", pwd, symbol); // print the symbol (writing to standard output)
 
         if (fgets(buffer, MAX_BUFFER, stdin)) {
@@ -37,7 +35,15 @@ int main(int argc, char * argv[]) {
 
             if (*args) { // if there was an argument given
                 if (strcmp(cmd, "clr") == 0) { // if clr given
-                    system("clear");
+                    pid_t pidclr = fork();
+                    if (pidclr < 0) { // error handling
+                        printf("Error creating process, fork failed.");
+                        exit(1);
+                    } else if (pidclr == 0) { // child process
+                        execlp("clear", "clear", NULL);
+                    } else {
+                        wait(NULL); // parent waits for child to finish
+                    } 
                 } else if (strcmp(cmd, "quit") == 0) { // if quit given
                     exit(0);
                 } else if (strcmp(cmd, "environ") == 0) {
@@ -68,7 +74,7 @@ int main(int argc, char * argv[]) {
                         printf("You are in %s\n", pwd);
                     } else {
                         chdir(args[1]);
-                        setenv(pwd, getcwd(), 1);
+                        setenv("PWD", getcwd(NULL, 0), 1);
                     }
 
                 }
